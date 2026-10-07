@@ -129,7 +129,7 @@ function BookDialog({ bike, onClose, onBooked }: { bike: Bike | null; onClose: (
       total_price: days * Number(bike.price_per_day),
     });
     setSaving(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(`Booked ${bike.model}!`);
     onBooked();
     onClose();
