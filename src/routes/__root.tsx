@@ -8,9 +8,10 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { Bike } from "lucide-react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -56,6 +57,16 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   );
 }
 
+function BikeLoading() {
+  return (
+    <div className="fixed inset-0 z-[100] flex min-h-screen items-center justify-center bg-background/80 backdrop-blur-sm">
+      <div className="relative flex w-full max-w-md items-center justify-center overflow-hidden">
+        <Bike className="size-24 text-brand animate-speed-left" strokeWidth={1.5} />
+      </div>
+    </div>
+  );
+}
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
@@ -79,6 +90,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
+  pendingComponent: BikeLoading,
 });
 
 function RootShell({ children }: { children: ReactNode }) {
@@ -98,6 +110,15 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+  const location = router.state.location;
+  const [isNavigating, setIsNavigating] = useState(true);
+
+  useEffect(() => {
+    setIsNavigating(true);
+    const timer = setTimeout(() => setIsNavigating(false), 800);
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
@@ -109,6 +130,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {isNavigating && <BikeLoading />}
       <Outlet />
       <Toaster />
     </QueryClientProvider>

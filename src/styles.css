@@ -80,3 +80,21 @@
   backdrop-filter: blur(16px);
   box-shadow: 0 0 0 1px oklch(0 0 0 / 0.05);
 }
+
+/* Hide Lovable badge */
+div[class*="lovable"], 
+div[id*="lovable"],
+lovable-badge,
+#lovable-badge,
+.lovable-badge {
+  display: none !important;
+}
+
+@keyframes speed-left {
+  0% { transform: translateX(50vw) scaleX(-1) skewX(10deg); }
+  100% { transform: translateX(-50vw) scaleX(-1) skewX(10deg); }
+}
+.animate-speed-left {
+  animation: speed-left 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+

@@ -129,13 +129,36 @@ function Admin() {
 }
 
 function Row({ b, children }: { b: Bike; children: React.ReactNode }) {
+  // Handle typing for Supabase joins
+  const bookings = b.bookings as unknown as Array<{ start_date: string, days: number, profiles: { full_name: string, phone: string } }> | null | undefined;
+
   return (
-    <div className="flex flex-wrap items-center gap-4 py-3">
-      <div className="min-w-[10ch] flex-1">
-        <div className="font-display text-sm font-semibold">{b.model}</div>
-        <div className="text-xs text-muted-foreground">{b.owner_name} · {b.location} · {inr(b.price_per_day)}/day</div>
+    <div className="flex flex-col gap-2 py-4">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-[10ch] flex-1">
+          <div className="font-display text-base font-semibold">{b.model}</div>
+          <div className="text-sm text-muted-foreground">{b.owner_name} · {b.location} · {inr(b.price_per_day)}/day</div>
+        </div>
+        <div className="flex items-center gap-2">{children}</div>
       </div>
-      <div className="flex items-center gap-2">{children}</div>
+      {bookings && bookings.length > 0 && (
+        <div className="mt-2 rounded-xl bg-ink/5 p-3 dark:bg-frost/5">
+          <h4 className="mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">Bookings ({bookings.length})</h4>
+          <div className="space-y-2">
+            {bookings.map((bk, i) => (
+              <div key={i} className="flex flex-col justify-between gap-1 border-l-2 border-brand/50 pl-3 text-sm sm:flex-row sm:items-center">
+                <div>
+                  <span className="font-semibold text-ink">{bk.profiles?.full_name || "Unknown User"}</span>
+                  <span className="ml-2 text-muted-foreground">{bk.profiles?.phone || "No phone"}</span>
+                </div>
+                <div className="text-xs font-medium text-muted-foreground">
+                  Starts {bk.start_date} · {bk.days} day(s)
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

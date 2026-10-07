@@ -11,7 +11,7 @@ export const adminListBikes = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: bikes, error } = await supabaseAdmin
       .from("bikes")
-      .select("id, model, owner_name, price_per_day, location, status, created_at")
+      .select("id, model, owner_name, price_per_day, location, status, created_at, bookings(start_date, days, profiles(full_name, phone))")
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
     return bikes;

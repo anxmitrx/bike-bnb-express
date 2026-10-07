@@ -32,8 +32,8 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-frost/55 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <header className="sticky top-4 z-50 mx-auto w-[calc(100%-2rem)] max-w-5xl rounded-2xl border border-white/20 bg-frost/60 shadow-[0_8px_32px_rgba(0,0,0,0.08)] backdrop-blur-xl transition-all duration-300">
+      <div className="flex items-center justify-between px-5 py-3 sm:px-6 sm:py-3.5">
         <Logo />
         <nav className="hidden items-center gap-7 text-sm font-medium text-muted-foreground sm:flex">
           <Link to="/bikes" className="transition-colors hover:text-brand" activeProps={{ className: "text-foreground" }}>
@@ -41,9 +41,6 @@ export function SiteHeader() {
           </Link>
           <Link to="/list-bike" className="transition-colors hover:text-brand" activeProps={{ className: "text-foreground" }}>
             List my bike
-          </Link>
-          <Link to="/admin" className="transition-colors hover:text-brand" activeProps={{ className: "text-foreground" }}>
-            Admin
           </Link>
         </nav>
         <div className="flex items-center gap-3">
@@ -67,7 +64,10 @@ export function SiteFooter() {
     <footer className="border-t border-border bg-frost/40 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-6 py-8 sm:flex-row sm:items-center">
         <span className="text-sm font-medium text-muted-foreground">Velocité — ride the neighborhood.</span>
-        <p className="text-xs text-muted-foreground">© 2026 Velocité. Every listing verified before it goes live.</p>
+        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+          <Link to="/admin" className="transition-colors hover:text-brand">Admin access</Link>
+          <span>© 2026 Velocité. Every listing verified before it goes live.</span>
+        </div>
       </div>
     </footer>
   );
