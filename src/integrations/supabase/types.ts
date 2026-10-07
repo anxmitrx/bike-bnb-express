@@ -14,7 +14,104 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bikes: {
+        Row: {
+          created_at: string
+          id: string
+          location: string
+          model: string
+          owner_id: string
+          owner_name: string
+          price_per_day: number
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          location: string
+          model: string
+          owner_id: string
+          owner_name: string
+          price_per_day: number
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          location?: string
+          model?: string
+          owner_id?: string
+          owner_name?: string
+          price_per_day?: number
+          status?: string
+        }
+        Relationships: []
+      }
+      bookings: {
+        Row: {
+          bike_id: string
+          created_at: string
+          days: number
+          id: string
+          renter_id: string
+          start_date: string
+          total_price: number
+        }
+        Insert: {
+          bike_id: string
+          created_at?: string
+          days: number
+          id?: string
+          renter_id: string
+          start_date: string
+          total_price: number
+        }
+        Update: {
+          bike_id?: string
+          created_at?: string
+          days?: number
+          id?: string
+          renter_id?: string
+          start_date?: string
+          total_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_bike_id_fkey"
+            columns: ["bike_id"]
+            isOneToOne: false
+            referencedRelation: "bikes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: string
+          location: string
+          phone: string
+          role: string | null
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string
+          id: string
+          location?: string
+          phone?: string
+          role?: string | null
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: string
+          location?: string
+          phone?: string
+          role?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
