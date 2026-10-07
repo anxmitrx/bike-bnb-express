@@ -47,7 +47,7 @@ function ListBike() {
       location: String(f.get("location")).trim(),
     });
     setSaving(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Request sent! Your bike goes live once the admin approves it.");
     form.reset();
     refetch();
