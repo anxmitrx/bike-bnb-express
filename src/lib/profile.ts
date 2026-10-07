@@ -1,4 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
+import bike1 from "@/assets/bike1.jpg";
+import bike2 from "@/assets/bike2.jpg";
 
 export async function fetchMyProfile() {
   const { data: u } = await supabase.auth.getUser();
@@ -8,7 +10,11 @@ export async function fetchMyProfile() {
   return data;
 }
 
-export const bikeImages = [
-  () => import("@/assets/bike1.jpg"),
-  () => import("@/assets/bike2.jpg"),
-];
+const imgs = [bike1, bike2];
+export function bikeImage(id: string) {
+  let h = 0;
+  for (const c of id) h = (h + c.charCodeAt(0)) % imgs.length;
+  return imgs[h];
+}
+
+export const inr = (n: number) => `₹${Number(n).toLocaleString("en-IN")}`;
