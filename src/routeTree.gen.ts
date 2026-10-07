@@ -10,33 +10,95 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedBikesRouteImport } from './routes/_authenticated/bikes'
+import { Route as AuthenticatedChooseRouteImport } from './routes/_authenticated/choose'
+import { Route as AuthenticatedListBikeRouteImport } from './routes/_authenticated/list-bike'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedBikesRoute = AuthenticatedBikesRouteImport.update({
+  id: '/bikes',
+  path: '/bikes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedChooseRoute = AuthenticatedChooseRouteImport.update({
+  id: '/choose',
+  path: '/choose',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedListBikeRoute = AuthenticatedListBikeRouteImport.update({
+  id: '/list-bike',
+  path: '/list-bike',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
+  '/bikes': typeof AuthenticatedBikesRoute
+  '/choose': typeof AuthenticatedChooseRoute
+  '/list-bike': typeof AuthenticatedListBikeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
+  '/bikes': typeof AuthenticatedBikesRoute
+  '/choose': typeof AuthenticatedChooseRoute
+  '/list-bike': typeof AuthenticatedListBikeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
+  '/_authenticated/bikes': typeof AuthenticatedBikesRoute
+  '/_authenticated/choose': typeof AuthenticatedChooseRoute
+  '/_authenticated/list-bike': typeof AuthenticatedListBikeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/admin' | '/auth' | '/bikes' | '/choose' | '/list-bike'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/admin' | '/auth' | '/bikes' | '/choose' | '/list-bike'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/admin'
+    | '/auth'
+    | '/_authenticated/bikes'
+    | '/_authenticated/choose'
+    | '/_authenticated/list-bike'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AdminRoute: typeof AdminRoute
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +110,71 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/bikes': {
+      id: '/_authenticated/bikes'
+      path: '/bikes'
+      fullPath: '/bikes'
+      preLoaderRoute: typeof AuthenticatedBikesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/choose': {
+      id: '/_authenticated/choose'
+      path: '/choose'
+      fullPath: '/choose'
+      preLoaderRoute: typeof AuthenticatedChooseRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/list-bike': {
+      id: '/_authenticated/list-bike'
+      path: '/list-bike'
+      fullPath: '/list-bike'
+      preLoaderRoute: typeof AuthenticatedListBikeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedBikesRoute: typeof AuthenticatedBikesRoute
+  AuthenticatedChooseRoute: typeof AuthenticatedChooseRoute
+  AuthenticatedListBikeRoute: typeof AuthenticatedListBikeRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedBikesRoute: AuthenticatedBikesRoute,
+  AuthenticatedChooseRoute: AuthenticatedChooseRoute,
+  AuthenticatedListBikeRoute: AuthenticatedListBikeRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AdminRoute: AdminRoute,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
