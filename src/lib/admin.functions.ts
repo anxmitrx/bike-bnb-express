@@ -11,10 +11,18 @@ export const adminListBikes = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: bikes, error } = await supabaseAdmin
       .from("bikes")
-      .select("id, model, owner_name, price_per_day, location, status, created_at, bookings(start_date, days, profiles(full_name, phone))")
+      .select("id, model, owner_name, price_per_day, location, status, created_at, bookings(start_date, days, renter_id)")
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
-    return bikes;
+    const ids = [...new Set((bikes ?? []).flatMap((b) => (b.bookings ?? []).map((k) => k.renter_id)))];
+    const { data: profs } = ids.length
+      ? await supabaseAdmin.from("profiles").select("id, full_name, phone").in("id", ids)
+      : { data: [] as { id: string; full_name: string; phone: string }[] };
+    const map = new Map((profs ?? []).map((p) => [p.id, p]));
+    return (bikes ?? []).map((b) => ({
+      ...b,
+      bookings: (b.bookings ?? []).map((k) => ({ start_date: k.start_date, days: k.days, profiles: map.get(k.renter_id) ?? null })),
+    }));
   });
 
 export const adminSetStatus = createServerFn({ method: "POST" })
